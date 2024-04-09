@@ -1,60 +1,58 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-struct Node{
+struct Node {
     int data;
     struct Node* next;
 };
 
-
-
-struct Node* createNode(int data){
+struct Node* createNode(int data) {
     struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    if(newNode ==NULL){
+    if (newNode == NULL) {
         printf("error\n");
         exit(1);
     }
-    newNode->data=data;
-    newNode->next=NULL;
+    newNode->data = data;
+    newNode->next = NULL;
     return newNode;
 }
 
-void printList(struct Node* head){
+void printList(struct Node* head) {
     struct Node* current = head;
-    while(current!=NULL){
+    while (current != NULL) {
         printf("%d ", current->data);
-        current=current->next;
+        current = current->next;
     }
 }
 
-void insertSorted(struct Node *head,int data){
-    struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
-    temp->data=data;
-    temp->next=NULL;
-    if(head==NULL){
-        head=temp;
-    }
-    else{
-        struct Node* current = head;
-        while(current!=NULL){
+void insertSorted(struct Node** headRef, int data) {// 포인터의 주소를 바꾸고 싶다면 이중포인터가 맞음
+    struct Node* temp = createNode(data);
+
+    if (*headRef == NULL || (*headRef)->data >= data) {
+        temp->next = *headRef;
+        *headRef = temp;
+    } else {
+        struct Node* p = *headRef;
+        while (p->next != NULL && p->next->data < data) {
+            p = p->next;
         }
-        current->next=temp;
+        temp->next = p->next;
+        p->next = temp;
     }
-    return ;
 }
 
-int main(){
+int main() {
     struct Node* head = NULL;
-    insertSorted(head,10);
-    // insertSorted(head,20);
-    // insertSorted(head,30);
-    // insertSorted(head,40);
-    printf("%d",head->data);
+    insertSorted(&head, 10);
+    insertSorted(&head, 20);
+    insertSorted(&head, 30);
+    insertSorted(&head, 40);
+    // printf("%d", head->data);
 
-    // int value;
-    // scanf("%d",&value);
-    // insertSorted(head,value);
+    int value;
+    scanf("%d", &value);
+    insertSorted(&head, value);
 
-    // printList(head);
+    printList(head);
     return 0;
 }
